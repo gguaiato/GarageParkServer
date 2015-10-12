@@ -38,6 +38,16 @@ public class PersonRepository extends Repository<Person> {
 		return false;
 	}
 
+	public boolean update(Person person) {
+        if (person != null) {
+            logger.info("Atualizando usuario na base de dados com nusp = "
+                    + person.getNusp());
+            save(person);
+            return true;
+        }
+        return false;
+    }
+
 	public boolean delete(String nusp) {
 		Person existingPerson = findByNusp(nusp);
 		if (existingPerson != null) {

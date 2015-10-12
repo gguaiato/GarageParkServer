@@ -1,10 +1,13 @@
 package com.garagepark.rest;
 
+import com.garagepark.bd.PersonRepository;
+import com.garagepark.bd.model.Person;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
 
@@ -15,6 +18,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class BaseJerseyTest extends JerseyTest {
 
@@ -28,8 +32,8 @@ public class BaseJerseyTest extends JerseyTest {
     public void setUp() throws Exception {
         super.setUp();
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
-            connection = DriverManager.getConnection("jdbc:hsqldb:mem:unit-testing-jpa", "sa", "");
+            Class.forName("org.h2.Driver");
+            connection = DriverManager.getConnection("jdbc:h2:mem:test", "sa", "");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -44,7 +48,7 @@ public class BaseJerseyTest extends JerseyTest {
     @After
     public void tearDown() throws Exception {
         super.tearDown();
-        //clearDatabase();
+        clearDatabase();
         if (em != null) {
             em.close();
         }
@@ -54,28 +58,12 @@ public class BaseJerseyTest extends JerseyTest {
     }
 
     public void clearDatabase() throws Exception {
-        try {
-            try {
-                Statement stmt = connection.createStatement();
-                try {
-                    stmt.execute("TRUNCATE SCHEMA public AND COMMIT");
-                    connection.commit();
-                } finally {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new Exception(e);
-            }
-        } catch (SQLException e) {
-            throw new Exception(e);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
+        PersonRepository personRepository = PersonRepository.instance();
+        List<Person> persons = personRepository.list(Integer.MAX_VALUE);
+        for (Person person : persons) {
+            personRepository.delete(person.getNusp());
         }
     }
-
 
     @Override
     protected TestContainerFactory getTestContainerFactory() throws TestContainerException {

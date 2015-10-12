@@ -13,7 +13,7 @@ Após a devida instalação dos requisitos para compilação, navegar até a pas
 
 * mvn clean package
 
-Logo após, será criado o arquivo garage-park-serverproj.war no diretório de nome target da pasta do projeto. Este deve ser usado para deploy no servidor Tomcat.
+Logo após, será criado o arquivo garage-park-server.war no diretório de nome target da pasta do projeto. Este deve ser usado para deploy no servidor Tomcat.
 
 Requisitos para execução
 -------------------------------------
@@ -33,6 +33,8 @@ Utilização dos serviços
 --------------------------------
 A utilização dos serviços de GET, POST e DELETE deve ser feita com base no endereço do servidor mais o nome garage-park-server (proveniente do garage-park-server.war) com adição do recurso /person. Exemplo:
  
-* curl --data curl --data "nusp=8599999&name=Gabriel&gender=masculino" http://localhost:8080/garage-park-server/v1/person
+* curl --data "nusp=8599999&name=Gabriel&gender=masculino" http://localhost:8080/garage-park-server/v1/person
+
+* curl -X PUT http://localhost:8080/garage-park-server/v1/person -d "nusp=8599999" -d "valid=false"
 
 * curl http://localhost:8080/garage-park-server/v1/person/8599999

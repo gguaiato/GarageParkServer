@@ -1,6 +1,7 @@
 package com.garagepark.bd.model;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Predicate;
 
 import com.google.gson.annotations.Expose;
 
@@ -11,7 +12,7 @@ public class Person {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="nusp", unique = true)
+	@Column(name="nusp")
 	@Expose
 	private String nusp;
 	
@@ -23,16 +24,29 @@ public class Person {
 	@Expose
 	private String gender;
 
+    @Column(name = "valid")
+    @Expose
+    private Boolean valid;
+
 	public Person() {}
-	
+
 	public Person(String nusp, String name, String gender) {
 		this.nusp = nusp;
 		this.name = name;
 		this.gender = gender;
+        this.valid = true;
 	}
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getValid() {
+        return valid;
+    }
+
+    public void setValid(Boolean valid) {
+        this.valid = valid;
     }
 
     public void setId(Long id) {
@@ -73,6 +87,7 @@ public class Person {
         if (!id.equals(person.id)) return false;
         if (!nusp.equals(person.nusp)) return false;
         if (!name.equals(person.name)) return false;
+        if (!valid.equals(person.valid)) return false;
         return gender.equals(person.gender);
 
     }
@@ -83,6 +98,7 @@ public class Person {
         result = 31 * result + nusp.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + gender.hashCode();
+        result = 31 * result + valid.hashCode();
         return result;
     }
 }
