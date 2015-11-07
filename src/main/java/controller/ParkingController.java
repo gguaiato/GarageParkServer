@@ -42,6 +42,7 @@ public class ParkingController {
             person.setParkingSpotReserved(parkingSpot);
             parkingSpot.setOwner(person);
             personRepository.update(person);
+            parkingSpotRepository.update(parkingSpot);
             return true;
         }
         return false;
@@ -55,6 +56,7 @@ public class ParkingController {
                 person.setParkingSpotReserved(null);
                 parkingSpot.setOwner(null);
                 personRepository.update(person);
+                parkingSpotRepository.update(parkingSpot);
             }
             return true;
         }
