@@ -28,6 +28,10 @@ public class Person {
     @Expose
     private Boolean valid;
 
+    @OneToOne(optional = true, fetch = FetchType.LAZY, orphanRemoval = false, mappedBy = "owner")
+    @Expose
+    private ParkingSpot parkingSpotReserved;
+
 	public Person() {}
 
 	public Person(String nusp, String name, String gender) {
@@ -75,6 +79,14 @@ public class Person {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public ParkingSpot getParkingSpotReserved() {
+        return parkingSpotReserved;
+    }
+
+    public void setParkingSpotReserved(ParkingSpot parkingSpotReserved) {
+        this.parkingSpotReserved = parkingSpotReserved;
     }
 
     @Override

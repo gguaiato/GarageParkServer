@@ -31,10 +31,37 @@ Informações sobre o projeto
 
 Utilização dos serviços
 --------------------------------
-A utilização dos serviços de GET, POST e DELETE deve ser feita com base no endereço do servidor mais o nome garage-park-server (proveniente do garage-park-server.war) com adição do recurso /person. Exemplo:
- 
+A utilização dos serviços de GET, POST e DELETE deve ser feita com base no endereço do servidor mais o nome garage-park-server (proveniente do garage-park-server.war) com adição do recurso desejado.
+
+#### PersonService
+
+Caminho base: /person
+
+##### Cadastro de pessoa 
 * curl --data "nusp=8599999&name=Gabriel&gender=masculino" http://localhost:8080/garage-park-server/v1/person
 
+##### Atualização de validade de uma pessoa 
 * curl -X PUT http://localhost:8080/garage-park-server/v1/person -d "nusp=8599999" -d "valid=false"
 
+##### Recuperação de dados de uma pessoa
 * curl http://localhost:8080/garage-park-server/v1/person/8599999
+
+
+#### ParkingSpotService
+
+Caminho base: /parking
+
+##### Cadastro de vaga 
+* curl --data "name=professor_1" http://localhost:8080/garage-park-server/v1/parking
+
+##### Visualização de dados de vaga
+* curl http://localhost:8080/garage-park-server/v1/parking/professor_1
+
+##### Listagem de todas as vagas
+* curl http://localhost:8080/garage-park-server/v1/parking/?limit=2
+
+##### Cadastro de reserva de uma vaga
+* curl --data "nusp=8599999" http://localhost:8080/garage-park-server/v1/parking/professor_1/reservation
+
+##### Liberação da reserva de uma vaga
+* curl -X PUT http://localhost:8080/garage-park-server/v1/parking/professor_1/clear

@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class PersonServiceTest extends BaseJerseyTest {
 
-	private static final String NUSP_TEST = "8516409";
+	private static final String NUSP_TEST = "8574986";
     private static final String BASE_URL = "v1/person";
 	private static final String NUSP_FIELD = "nusp";
 	private static final String NAME_FIELD = "name";
@@ -47,6 +47,7 @@ public class PersonServiceTest extends BaseJerseyTest {
         Assert.assertEquals(CREATED.getStatusCode(), response.getStatus());
 		Assert.assertNotNull(PersonRepository.instance().findByNusp(NUSP_TEST));
 	}
+
 
     @Test
 	public void shouldRetrieveUser() {

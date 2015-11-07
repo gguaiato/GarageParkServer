@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import com.garagepark.bd.PersonRepository;
 import com.garagepark.bd.model.Person;
+import controller.PersonController;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -23,18 +24,17 @@ import com.google.gson.GsonBuilder;
 public class PersonService {
 	
 	private static Logger logger = Logger.getLogger(PersonService.class);
-	private static PersonRepository personRepository = PersonRepository.instance();
+	private PersonController personController = PersonController.instance();
 	private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
 	private static final String ENCODING = "UTF-8";
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON + ";charset=" + ENCODING)
-	public Response includeUser(@FormParam("nusp") String nusp,
+	public Response newUser(@FormParam("nusp") String nusp,
 								@FormParam("name") String name,
                                 @FormParam("gender") String gender) {
 		logger.info(String.format("POST /person params: nusp=%s name=%s gender=%s", nusp, name, gender));
-		Person person = new Person(nusp, name, gender);
-        boolean included = personRepository.insert(person);
+		boolean included = personController.includeUser(nusp, name, gender);
         if (included)
             return Utils.buildSimpleResponse(CREATED);
 		return Utils.buildSimpleResponse(ACCEPTED);
@@ -42,27 +42,21 @@ public class PersonService {
 
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON + ";charset=" + ENCODING)
-	public Response updatePersonValid(@FormParam("nusp") String nusp,
+	public Response setPersonValid(@FormParam("nusp") String nusp,
 									  @FormParam("valid") Boolean valid) {
 		logger.info(String.format("PUT /person params: nusp=%s valid=%b", nusp, valid));
-		Person person = personRepository.findByNusp(nusp);
-		if (person != null) {
-			person.setValid(valid);
-			boolean updated = personRepository.update(person);
-			if (updated) {
-				return Response.status(NO_CONTENT).build();
-			}
-			return Response.status(BAD_REQUEST).entity("{ result: \"Pessoa não pode ser atualizada.\" }").encoding("UTF-8").build();
+		if (personController.updateValidPerson(nusp, valid)) {
+			return Response.status(NO_CONTENT).build();
 		}
-		return Response.status(NOT_FOUND).entity("{ result: \"Pessoa não encontrada.\" }").build();
+		return Response.status(BAD_REQUEST).entity("{ result: \"Pessoa não pode ser atualizada.\" }").encoding("UTF-8").build();
 	}
-	
+
 	@GET
     @Path("/{nusp}")
 	@Produces(MediaType.APPLICATION_JSON + ";charset=" + ENCODING)
-	public Response listUsers(@PathParam("nusp") String nusp) {
+	public Response listUser(@PathParam("nusp") String nusp) {
 		logger.info("GET /person params: " + "nusp=" + nusp);
-		Person person = personRepository.findByNusp(nusp);
+		Person person = personController.getPerson(nusp);
 		if (person != null) {
 			String json = gson.toJson(person);
 			return Utils.buildTextResponse(OK, json);

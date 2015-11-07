@@ -10,6 +10,7 @@ import javax.persistence.Persistence;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 
 public class Repository<T> implements Serializable {
@@ -63,7 +64,10 @@ public class Repository<T> implements Serializable {
 			criteria.add(c);
 		}
 
+		//Session session = getSession();
+		//Transaction transaction = session.getTransaction();
 		List<T> result = criteria.list();
+		//transaction.commit();
 		return result;
 	}
 
@@ -80,14 +84,18 @@ public class Repository<T> implements Serializable {
 
 	protected void delete(T entity) {
 		Session session = getSession();
+		Transaction transaction = session.beginTransaction();
 		session.delete(entity);
 		session.flush();
+		transaction.commit();
 	}
 
 	protected T save(T entity) {
 		Session session = getSession();
-		T savedEntity = (T) session.merge(entity);
+		Transaction transaction = session.beginTransaction();
+		T savedEntity = (T) session.save(entity);
 		session.flush();
+		transaction.commit();
 		return savedEntity;
 	}
 }

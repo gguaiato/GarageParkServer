@@ -1,6 +1,8 @@
 package com.garagepark.rest;
 
+import com.garagepark.bd.ParkingSpotRepository;
 import com.garagepark.bd.PersonRepository;
+import com.garagepark.bd.model.ParkingSpot;
 import com.garagepark.bd.model.Person;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -8,6 +10,7 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.After;
 import org.junit.Before;
 
@@ -16,8 +19,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 public class BaseJerseyTest extends JerseyTest {
@@ -58,10 +59,23 @@ public class BaseJerseyTest extends JerseyTest {
     }
 
     public void clearDatabase() throws Exception {
+        cleanParkingSpotRepository();
+        cleanPersonRepository();
+    }
+
+    private void cleanPersonRepository() {
         PersonRepository personRepository = PersonRepository.instance();
         List<Person> persons = personRepository.list(Integer.MAX_VALUE);
         for (Person person : persons) {
             personRepository.delete(person.getNusp());
+        }
+    }
+
+    private void cleanParkingSpotRepository() {
+        ParkingSpotRepository parkingSpotRepository = ParkingSpotRepository.instance();
+        List<ParkingSpot> parkingSpots = parkingSpotRepository.list(Integer.MAX_VALUE);
+        for (ParkingSpot parkingSpot : parkingSpots) {
+            parkingSpotRepository.delete(parkingSpot.getName());
         }
     }
 

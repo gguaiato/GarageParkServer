@@ -3,6 +3,7 @@
     <persistence-unit name="garagepark" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>com.garagepark.bd.model.Person</class>
+        <class>com.garagepark.bd.model.ParkingSpot</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:h2:mem:test"/>
